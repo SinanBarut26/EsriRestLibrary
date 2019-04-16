@@ -1,0 +1,10 @@
+﻿namespace EsriRestLibrary.Core.Models
+{
+    public class EsriField
+    {
+        public string name { get; set; }
+        public string type { get; set; }
+        public string alias { get; set; }
+        public int? length { get; set; }
+    }
+}
