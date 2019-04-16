@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.489
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EsriRestLibrary.Core", "EsriRestCore\EsriRestLibrary.Core.csproj", "{5594474F-38F8-4AB9-9EC1-6537A2C3F2BF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5594474F-38F8-4AB9-9EC1-6537A2C3F2BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5594474F-38F8-4AB9-9EC1-6537A2C3F2BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5594474F-38F8-4AB9-9EC1-6537A2C3F2BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5594474F-38F8-4AB9-9EC1-6537A2C3F2BF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7B2D2359-BC74-432C-8B3B-5B42FBD86BF7}
+	EndGlobalSection
+EndGlobal
