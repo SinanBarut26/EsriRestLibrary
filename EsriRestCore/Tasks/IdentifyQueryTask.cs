@@ -41,7 +41,7 @@ namespace EsriRestLibrary.Core.Tasks
                 var response = client.Execute(request);
 
                 if (!response.IsSuccessful)
-                    throw new Exception("EsriResponseCode: " + response.StatusCode);
+                    throw new Exception("Esri Error Response Code: " + response.StatusCode);
 
 
                 var content = response.Content;
@@ -50,10 +50,10 @@ namespace EsriRestLibrary.Core.Tasks
             }
             catch (Exception e)
             {
-                throw new Exception("Esri servisinde hata oluştu. Hata Kodu:-5000", e);
+                throw new Exception("Error in Esri Service. Error Code : #-5000#", e);
             }
 
-            if (ret == null) throw new Exception("Esri servisinde hata oluştu. Hata Kodu:-5000");
+            if (ret == null) throw new Exception("Error in Esri Service. Error Code : #-5000#");
             return ret;
         }
     }

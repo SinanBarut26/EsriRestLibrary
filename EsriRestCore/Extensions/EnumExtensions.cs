@@ -17,5 +17,10 @@ namespace EsriRestLibrary.Core.Extensions
                 ? ((DescriptionAttribute)attributes.ElementAt(0)).Description
                 : "Description Not Found";
         }
+
+        public static string ReplaceCoordinateForCommaToDot(this string coordinateWithComma)
+        {
+            return coordinateWithComma.Replace(",", ".");
+        }
     }
 }

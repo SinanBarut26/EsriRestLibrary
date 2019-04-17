@@ -30,7 +30,7 @@ namespace EsriRestLibrary.Core.Helpers
             var response = client.Execute(request);
 
             if (!response.IsSuccessful)
-                throw new Exception("EsriResponseCode: " + response.StatusCode);
+                throw new Exception("Esri Error Response Code: " + response.StatusCode);
 
             var content = response.Content;
 
@@ -41,9 +41,9 @@ namespace EsriRestLibrary.Core.Helpers
             }
             catch (Exception e)
             {
-                throw new Exception("Esri feature servisinde hata oluştu. Hata Kodu:-1002", e);
+                throw new Exception("Error in Esri Feature Service. Error Code : #-1002#", e);
             }
-            if (result == null) throw new Exception("Esri servisinden cevap alınamadı: Hata Kodu: -1002");
+            if (result == null) throw new Exception("No Response Esri Service: Error Code: #-1002#");
             if (result.error != null) throw new Exception(result.error.message);
             if (result.addResults.Any()) return result.addResults.FirstOrDefault();
             return result.updateResults.Any() ? result.updateResults.FirstOrDefault() : result.deleteResults.FirstOrDefault();
@@ -74,7 +74,7 @@ namespace EsriRestLibrary.Core.Helpers
                 var response = client.Execute(request);
 
                 if (!response.IsSuccessful)
-                    throw new Exception("EsriResponseCode: " + response.StatusCode);
+                    throw new Exception("Esri Error Response Code: " + response.StatusCode);
 
 
                 var content = response.Content;
@@ -84,7 +84,7 @@ namespace EsriRestLibrary.Core.Helpers
             }
             catch (Exception e)
             {
-                throw new Exception("Esri feature servisinde hata oluştu. Hata Kodu:-1002", e);
+                throw new Exception("Error in Esri Feature Service. Error Code : #-1002#", e);
             }
 
             return ret;
@@ -111,7 +111,7 @@ namespace EsriRestLibrary.Core.Helpers
                     request.AddQueryParameter("token", token);
                 var response = client.Execute(request);
                 if (!response.IsSuccessful)
-                    throw new Exception("EsriResponseCode: " + response.StatusCode);
+                    throw new Exception("Esri Error Response Code: " + response.StatusCode);
 
 
                 var content = response.Content;
@@ -120,7 +120,7 @@ namespace EsriRestLibrary.Core.Helpers
             }
             catch (Exception e)
             {
-                throw new Exception("Esri feature servisinde hata oluştu. Hata Kodu:-1002", e);
+                throw new Exception("Error in Esri Feature Service. Error Code : #-1002#", e);
             }
 
             return ret;
@@ -148,7 +148,7 @@ namespace EsriRestLibrary.Core.Helpers
                 var response = client.Execute(request);
 
                 if (!response.IsSuccessful)
-                    throw new Exception("EsriResponseCode: " + response.StatusCode);
+                    throw new Exception("Esri Error Response Code: " + response.StatusCode);
 
 
                 var content = response.Content;
@@ -157,7 +157,7 @@ namespace EsriRestLibrary.Core.Helpers
             }
             catch (Exception e)
             {
-                throw new Exception("Esri feature servisinde hata oluştu. Hata Kodu:-1002", e);
+                throw new Exception("Error in Esri Feature Service. Error Code : #-1002#", e);
             }
 
             return ret;

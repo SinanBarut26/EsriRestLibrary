@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using EsriRestLibrary.Core.Enums;
+﻿using EsriRestLibrary.Core.Enums;
 using EsriRestLibrary.Core.Models;
 using EsriRestLibrary.Core.Tasks;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 
 namespace EsriRestLibrary.Core.Helpers
 {
@@ -15,12 +15,6 @@ namespace EsriRestLibrary.Core.Helpers
         //ITRF96
         private readonly string _url;
         private readonly string _token;
-
-        private readonly SpatialReference _sr = new SpatialReference
-        {
-            wkt =
-                "PROJCS[\"ITRF_96_UTM_Zone_35N\",GEOGCS[\"GCS_GRS_1980\",DATUM[\"D_ITRF_1996\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",30.0],PARAMETER[\"Scale_Factor\",1.0],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]"
-        };
 
         public EsriGeoRepository(string serviceUrl, string token = null, string proxyUrl = null)
         {
@@ -40,7 +34,7 @@ namespace EsriRestLibrary.Core.Helpers
                 var request = new FeatureRequest
                 {
                     f = "pjson",
-                    adds =  JsonConvert.SerializeObject(features)
+                    adds = JsonConvert.SerializeObject(features)
                 };
                 var response = GeometryManager.FeatureTask(_url, request, ApplyEditsTypes.Add, _token);
                 dynamic geo = geometry;
@@ -55,7 +49,7 @@ namespace EsriRestLibrary.Core.Helpers
                 };
                 var response = GeometryManager.AddFeatureTask(_url, request);
                 dynamic geo = geometry;
-                return Find("OBJECTID=" + response.addResults.FirstOrDefault().objectId, geo.spatialReference);
+                return Find("OBJECTID=" + response.addResults.FirstOrDefault()?.objectId, geo.spatialReference);
             }
 
 
@@ -90,16 +84,11 @@ namespace EsriRestLibrary.Core.Helpers
 
         public virtual void Delete(decimal id)
         {
-            Delete(id.ToString());
+            Delete(id.ToString(CultureInfo.InvariantCulture));
         }
 
         public virtual void Delete(string criteria)
         {
-            //var request = new DeleteFeatureRequest
-            //{
-            //    f = "json",
-            //    objectIds = criteria
-            //};
 
             if (_token != null)
             {
@@ -119,7 +108,6 @@ namespace EsriRestLibrary.Core.Helpers
                 };
                 GeometryManager.DeleteFeatureTask(_url, request);
             }
-            //GeometryManager.DeleteFeatureTask(_url, request, _token);
         }
 
         public virtual Feature<TEntity, TGeometry> Edit(TEntity entity, TGeometry geometry)
@@ -139,7 +127,7 @@ namespace EsriRestLibrary.Core.Helpers
                 };
                 var response = GeometryManager.FeatureTask(_url, request, ApplyEditsTypes.Update, _token);
                 dynamic geo = geometry;
-                return Find("OBJECTID=" + response.objectId, geo.spatialReference);
+                return Find($"OBJECTID={response.objectId}", geo.spatialReference);
             }
             else
             {
@@ -150,14 +138,13 @@ namespace EsriRestLibrary.Core.Helpers
                 };
                 var response = GeometryManager.UpdateFeatureTask(_url, request);
                 dynamic geo = geometry;
-                return Find("OBJECTID=" + response.updateResults.FirstOrDefault().objectId, geo.spatialReference);
+                return Find($"OBJECTID={response.updateResults.FirstOrDefault()?.objectId}", geo.spatialReference);
             }
 
         }
 
-        public virtual Feature<TEntity, TGeometry> Find(string criteria, SpatialReference spatialReference = null)
+        public virtual Feature<TEntity, TGeometry> Find(string criteria, SpatialReference spatialReference)
         {
-            var spr = spatialReference != null ? spatialReference : _sr;
             var feature = new Feature<TEntity, TGeometry>();
             var request = new QueryRequest
             {
@@ -165,8 +152,8 @@ namespace EsriRestLibrary.Core.Helpers
                 //resultOffset = 0,
                 //resultRecordCount = 1,
                 outFields = "*",
-                inSR = JsonConvert.SerializeObject(spr),
-                outSR = JsonConvert.SerializeObject(spr)
+                inSR = JsonConvert.SerializeObject(spatialReference),
+                outSR = JsonConvert.SerializeObject(spatialReference)
             };
             var response = new EsriQueryTask<TGeometry, TEntity>(_url, _token);
             var exe = response.Execute(request);
@@ -185,18 +172,17 @@ namespace EsriRestLibrary.Core.Helpers
 
         public virtual Feature<TEntity, TGeometry> Find(int id, SpatialReference spatialReference = null)
         {
-            return Find("OBJECTID=" + id, spatialReference);
+            return Find($"OBJECTID={id}", spatialReference);
         }
 
         public Feature<TEntity, TGeometry> Find(decimal id, SpatialReference spatialReference = null)
         {
-            return Find("OBJECTID=" + id, spatialReference);
+            return Find($"OBJECTID={id}", spatialReference);
         }
 
-        public virtual List<Feature<TEntity, TGeometry>> GetList(string criteria, string orderBy, string sortDirection,
-            int pageStart = 0, int pageSize = 10, SpatialReference spatialReference = null)
+        public virtual List<Feature<TEntity, TGeometry>> GetList(string criteria, SpatialReference spatialReference, string orderBy, string sortDirection,
+            int pageStart = 0, int pageSize = 10)
         {
-            var spr = spatialReference ?? _sr;
             var featureList = new List<Feature<TEntity, TGeometry>>();
             var request = new QueryRequest
             {
@@ -205,8 +191,8 @@ namespace EsriRestLibrary.Core.Helpers
                 //resultRecordCount = pageSize,
                 orderByFields = orderBy + " " + sortDirection,
                 outFields = "*",
-                inSR = JsonConvert.SerializeObject(spr),
-                outSR = JsonConvert.SerializeObject(spr)
+                inSR = JsonConvert.SerializeObject(spatialReference),
+                outSR = JsonConvert.SerializeObject(spatialReference)
             };
             var response = new EsriQueryTask<TGeometry, TEntity>(_url, _token).Execute(request);
 
@@ -227,10 +213,8 @@ namespace EsriRestLibrary.Core.Helpers
             return featureList;
         }
 
-        public virtual List<Feature<TEntity, TGeometry>> GetList(string criteria,
-            SpatialReference spatialReference = null)
+        public virtual List<Feature<TEntity, TGeometry>> GetList(string criteria, SpatialReference spatialReference)
         {
-            var spr = spatialReference != null ? spatialReference : _sr;
             var featureList = new List<Feature<TEntity, TGeometry>>();
             var request = new QueryRequest
             {
@@ -239,8 +223,8 @@ namespace EsriRestLibrary.Core.Helpers
                 //resultRecordCount = pageSize,
                 //orderByFields = orderBy + " " + sortDirection,
                 outFields = "*",
-                inSR = JsonConvert.SerializeObject(spr),
-                outSR = JsonConvert.SerializeObject(spr)
+                inSR = JsonConvert.SerializeObject(spatialReference),
+                outSR = JsonConvert.SerializeObject(spatialReference)
             };
             var response = new EsriQueryTask<TGeometry, TEntity>(_url, _token).Execute(request);
             if (response.features == null) return featureList;
