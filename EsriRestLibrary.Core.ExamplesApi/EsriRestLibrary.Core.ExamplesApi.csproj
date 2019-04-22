@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Entity\Entity.csproj" />
-    <ProjectReference Include="..\EsriRestCore\EsriRestLibrary.Core.csproj" />
+    <ProjectReference Include="..\EsriRestLibrary.Core\EsriRestLibrary.Core.csproj" />
   </ItemGroup>
 
 </Project>
