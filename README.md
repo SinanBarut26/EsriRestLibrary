@@ -2,10 +2,6 @@
 This project created for easyly access to Esri Rest service in .Net Core 2
 
 # Usage
-There no dependecy injection for now
-
-So you can start to use direct in your code
-
 EsriPointDTO.cs //It will use in your controller or bussiness logic layer
 ```C#
   public class PointEntity
