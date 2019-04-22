@@ -1,14 +1,12 @@
-﻿using EsriRestLibrary.Core.Helpers;
-using EsriRestLibrary.Core.Models;
+﻿using Entity.Models;
+using EsriRestLibrary.Core.Helpers;
+using EsriRestLibrary.Core.Interfaces;
 
 namespace EsriRestLibrary.Core.Services
 {
-    public class PointService<TEntity> : EsriGeoRepository<TEntity, EsriPoint>
+    public class PointService<TEntity> :  EsriGeoRepository<TEntity, EsriPoint>, IPointService<TEntity> 
         where TEntity : class, new()
     {
-        public PointService(string serviceUrl, string token = null, string proxyUrl = null) : base(serviceUrl, token,
-            proxyUrl)
-        {
-        }
+       
     }
 }

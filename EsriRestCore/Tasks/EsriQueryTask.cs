@@ -1,8 +1,8 @@
-﻿using System;
-using System.Net;
-using EsriRestLibrary.Core.Models;
+﻿using Entity.Models;
 using Newtonsoft.Json;
 using RestSharp;
+using System;
+using System.Net;
 
 namespace EsriRestLibrary.Core.Tasks
 {
@@ -24,7 +24,7 @@ namespace EsriRestLibrary.Core.Tasks
             try
             {
                 var client = new RestClient(_url + "/query");
-                var defaultProxy = new WebProxy {UseDefaultCredentials = true};
+                var defaultProxy = new WebProxy { UseDefaultCredentials = true };
                 client.Proxy = defaultProxy;
 
                 var request = new RestRequest(Method.POST)

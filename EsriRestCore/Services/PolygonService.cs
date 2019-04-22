@@ -1,13 +1,12 @@
-﻿using EsriRestLibrary.Core.Helpers;
-using EsriRestLibrary.Core.Models;
+﻿using Entity.Models;
+using EsriRestLibrary.Core.Helpers;
+using EsriRestLibrary.Core.Interfaces;
 
 namespace EsriRestLibrary.Core.Services
 {
-    public class PolygonService<TEntity> : EsriGeoRepository<TEntity, EsriPolygon>
+    public class PolygonService<TEntity> : EsriGeoRepository<TEntity, EsriPolygon>, IPolygonService<TEntity>
         where TEntity : class, new()
     {
-        public PolygonService(string serviceUrl, string proxyUrl = null) : base(serviceUrl, proxyUrl)
-        {
-        }
+      
     }
 }
