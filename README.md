@@ -6,35 +6,16 @@ There no dependecy injection for now
 
 So you can start to use direct in your code
 
-GeoContext.cs
-```C#
-public class GeoContext
-{
-  public string Proxy { get; set; }
-  public string Url { get; set; }
-  public string Token { get; set; }
-}
-```
 EsriPointDTO.cs //It will use in your controller or bussiness logic layer
 ```C#
-  public class EsriPointDTO
+  public class PointEntity
   {
-    public decimal OBJECTID { get; set; }
-    public string Name { get; set; }
+    public int objectid { get; set; }
+    public int incidentid { get; set; }
+    public int inspectid { get; set; }
+    public int siteid { get; set; }
+    public string typdamage { get; set; }
   }
-```
-
-appsettings.json
-```json
-  ..
-  ..
-  "GeoContext": {
-    "Url": "Your Feature service url",
-    "Token": "if you use token based request, you can add your token",
-    "Proxy": "This is your Esri Proxy url, it could be use but my recommendation is token"
-  }
-  ..
-  ..
 ```
 
 Startup.cs
@@ -43,34 +24,45 @@ public void ConfigureServices(IServiceCollection services)
 {
   ..
   ..
-  services.Configure<GeoContext>(Configuration.GetSection("GeoContext"));
+  services.UseEsriRestLibraryDependencies();
   ..
   ..
 }
 
 ```
 
-Usage
+Example Usage of WebApi
 ```C#
-private readonly PointService<EsriPointDTO> _pointDal;
+  public class ValuesController : ControllerBase
+  {
+    private readonly SpatialReference _srNad1983 = new SpatialReference
+    {
+      wkt = "PROJCS[\"NAD_1983_HARN_StatePlane_Illinois_East_FIPS_1201\",GEOGCS[\"GCS_North_American_1983_HARN\",DATUM[\"D_North_American_1983_HARN\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",984250.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-88.33333333333333],PARAMETER[\"Scale_Factor\",0.999975],PARAMETER[\"Latitude_Of_Origin\",36.66666666666666],UNIT[\"Foot_US\",0.3048006096012192]]"
+    };
 
-public SampleController(IOptionsSnapshot<GeoContext> settings){
-   _pointDal = new PointService<EsriPointDTO>(geoContext.Url, geoContext.Token);
-}
+    private readonly ServicesAccess _servicesAccess = new ServicesAccess
+    {
+      url = "https://sampleserver6.arcgisonline.com/arcgis/rest/services/CommercialDamageAssessment/FeatureServer",
+      token = null
+    };
 
-public IActionResult Create(GeoCustomModel model){
-
- var addedGeo = _pointDal.Add(new EsriPointDTO { Name = model.Name },
-                new EsriPoint(entity.PointX.ReplaceCommaAndDotForCoordinate(),
-                    entity.PointY.ReplaceCommaAndDotForCoordinate(), new SpatialReference { wkid = 4326 }));
-return View();
-}
+    private readonly IPointService<PointEntity> _pointService;
+    public ValuesController(IPointService<PointEntity> pointService)
+    {
+      _pointService = new PointService<PointEntity>();
+    }
+    // GET api/values
+    [HttpGet]
+    public ActionResult<IEnumerable<string>> Get()
+    {
+      var response = _pointService.GetList(_servicesAccess, 0, "1=1", _srNad1983);
+      // return all objectid
+      return response.Select(x => x.Attributes.objectid.ToString()).ToList();
+    }
+  }
 ```
 
-It is extension for replace comma to dot
-```C#
-public static string ReplaceCommaAndDotForCoordinate(this string coordinateWithComma)
-{
-  return coordinateWithComma.Replace(",", ".");
-}
-```
+Note: If your coordinates have comma, you must to change with dot. For example: if your coordinates like x=27,1231 y=54,1312, change it like x=27.1231 y=54.1312. You can use our 'ReplaceCoordinateForCommaToDot' extension.
+
+Usage example
+```x.ReplaceCoordinateForCommaToDot()```
