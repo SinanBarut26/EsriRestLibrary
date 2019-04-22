@@ -11,8 +11,8 @@ namespace EsriRestLibrary.Core.Configuration
         {
             //serviceCollection.AddScoped(typeof(IGeoRepository<,>), typeof(EsriGeoRepository<,>));
             serviceCollection.AddScoped(typeof(IPointService<>), typeof(PointService<>));
-            //serviceCollection.AddScoped(typeof(IPolyLineService<>), typeof(PolyLineService<>));
-            //serviceCollection.AddScoped(typeof(IPolygonService<>), typeof(PolygonService<>));
+            serviceCollection.AddScoped(typeof(IPolyLineService<>), typeof(PolyLineService<>));
+            serviceCollection.AddScoped(typeof(IPolygonService<>), typeof(PolygonService<>));
 
             return serviceCollection;
         }
