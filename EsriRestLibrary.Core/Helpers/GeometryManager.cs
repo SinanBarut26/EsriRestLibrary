@@ -1,23 +1,24 @@
-﻿using Entity.Models;
-using Newtonsoft.Json;
-using RestSharp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using Entity.Models;
+using Newtonsoft.Json;
+using RestSharp;
 
 namespace EsriRestLibrary.Core.Helpers
 {
     internal static class GeometryManager
     {
-        internal static IEnumerable<ApplyEditsResult> FeatureTask(string featureUrl, FeatureRequest featureRequest, string token)
+        internal static IEnumerable<ApplyEditsResult> FeatureTask(string featureUrl, FeatureRequest featureRequest,
+            string token)
         {
             var client = new RestClient(featureUrl + "/applyEdits");
-            var defaultProxy = new WebProxy { UseDefaultCredentials = true };
+            var defaultProxy = new WebProxy {UseDefaultCredentials = true};
             client.Proxy = defaultProxy;
 
             var request = new RestRequest(Method.POST)
             {
-                RequestFormat = DataFormat.Json,
+                RequestFormat = DataFormat.Json
             };
             request.Parameters.Clear();
             request.AddObject(featureRequest);

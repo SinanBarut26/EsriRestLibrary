@@ -1,8 +1,8 @@
-﻿using Entity.Models;
+﻿using System;
+using System.Net;
+using Entity.Models;
 using Newtonsoft.Json;
 using RestSharp;
-using System;
-using System.Net;
 
 namespace EsriRestLibrary.Core.Tasks
 {
@@ -10,13 +10,13 @@ namespace EsriRestLibrary.Core.Tasks
     {
         private readonly string _token;
 
+        private readonly string _url;
+
         public EsriQueryTask(string url, string token = null)
         {
             _token = token;
             _url = url;
         }
-
-        private readonly string _url;
 
         public QueryResult<TGeo, TAttr> Execute(QueryRequest queryRequest)
         {
@@ -24,7 +24,7 @@ namespace EsriRestLibrary.Core.Tasks
             try
             {
                 var client = new RestClient(_url + "/query");
-                var defaultProxy = new WebProxy { UseDefaultCredentials = true };
+                var defaultProxy = new WebProxy {UseDefaultCredentials = true};
                 client.Proxy = defaultProxy;
 
                 var request = new RestRequest(Method.POST)

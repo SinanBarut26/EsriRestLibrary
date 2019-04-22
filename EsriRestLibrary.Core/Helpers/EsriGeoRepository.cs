@@ -1,9 +1,9 @@
-﻿using Entity.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Entity.Models;
 using EsriRestLibrary.Core.Interfaces;
 using EsriRestLibrary.Core.Tasks;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace EsriRestLibrary.Core.Helpers
 {
@@ -11,13 +11,13 @@ namespace EsriRestLibrary.Core.Helpers
         where TEntity : class, new()
         where TGeometry : class, new()
     {
-
-        public virtual IEnumerable<ApplyEditsResult> ApplyEdits(ServicesAccess servicesAccess, IEnumerable<ApplyEditsFeature<TEntity, TGeometry>> features)
+        public virtual IEnumerable<ApplyEditsResult> ApplyEdits(ServicesAccess servicesAccess,
+            IEnumerable<ApplyEditsFeature<TEntity, TGeometry>> features)
         {
             var request = new FeatureRequest
             {
                 f = "pjson",
-                edits = JsonConvert.SerializeObject(features),
+                edits = JsonConvert.SerializeObject(features)
             };
             var response = GeometryManager.FeatureTask(servicesAccess.url, request, servicesAccess.token);
             return response;
@@ -27,7 +27,7 @@ namespace EsriRestLibrary.Core.Helpers
         {
             var request = new QueryRequest
             {
-                @where = criteria,
+                where = criteria,
                 returnCountOnly = true
             };
             var task = new EsriQueryTask<TGeometry, TEntity>(servicesAccess.url, servicesAccess.token);
@@ -35,12 +35,13 @@ namespace EsriRestLibrary.Core.Helpers
             return response.count;
         }
 
-        public virtual Feature<TEntity, TGeometry> Find(ServicesAccess servicesAccess, int layerId, string criteria, SpatialReference spatialReference)
+        public virtual Feature<TEntity, TGeometry> Find(ServicesAccess servicesAccess, int layerId, string criteria,
+            SpatialReference spatialReference)
         {
             var feature = new Feature<TEntity, TGeometry>();
             var request = new QueryRequest
             {
-                @where = criteria,
+                where = criteria,
                 //resultOffset = 0,
                 //resultRecordCount = 1,
                 outFields = "*",
@@ -48,7 +49,8 @@ namespace EsriRestLibrary.Core.Helpers
                 outSR = JsonConvert.SerializeObject(spatialReference)
             };
 
-            var response = new EsriQueryTask<TGeometry, TEntity>($"{servicesAccess.url}/{layerId}", servicesAccess.token);
+            var response =
+                new EsriQueryTask<TGeometry, TEntity>($"{servicesAccess.url}/{layerId}", servicesAccess.token);
             var exe = response.Execute(request);
 
             if (exe.features == null) return feature;
@@ -63,23 +65,26 @@ namespace EsriRestLibrary.Core.Helpers
             return feature;
         }
 
-        public virtual Feature<TEntity, TGeometry> Find(ServicesAccess servicesAccess, int layerId, int objectId, SpatialReference spatialReference)
+        public virtual Feature<TEntity, TGeometry> Find(ServicesAccess servicesAccess, int layerId, int objectId,
+            SpatialReference spatialReference)
         {
             return Find(servicesAccess, layerId, $"OBJECTID={objectId}", spatialReference);
         }
 
-        public Feature<TEntity, TGeometry> Find(ServicesAccess servicesAccess, int layerId, decimal objectId, SpatialReference spatialReference)
+        public Feature<TEntity, TGeometry> Find(ServicesAccess servicesAccess, int layerId, decimal objectId,
+            SpatialReference spatialReference)
         {
             return Find(servicesAccess, layerId, $"OBJECTID={objectId}", spatialReference);
         }
 
-        public virtual IEnumerable<Feature<TEntity, TGeometry>> GetList(ServicesAccess servicesAccess, int layerId, string criteria, SpatialReference spatialReference, string orderBy, string sortDirection,
+        public virtual IEnumerable<Feature<TEntity, TGeometry>> GetList(ServicesAccess servicesAccess, int layerId,
+            string criteria, SpatialReference spatialReference, string orderBy, string sortDirection,
             int pageStart = 0, int pageSize = 10)
         {
             var featureList = new List<Feature<TEntity, TGeometry>>();
             var request = new QueryRequest
             {
-                @where = criteria,
+                where = criteria,
                 //resultOffset = pageStart,
                 //resultRecordCount = pageSize,
                 orderByFields = orderBy + " " + sortDirection,
@@ -87,7 +92,9 @@ namespace EsriRestLibrary.Core.Helpers
                 inSR = JsonConvert.SerializeObject(spatialReference),
                 outSR = JsonConvert.SerializeObject(spatialReference)
             };
-            var response = new EsriQueryTask<TGeometry, TEntity>($"{servicesAccess.url}/{layerId}", servicesAccess.token).Execute(request);
+            var response =
+                new EsriQueryTask<TGeometry, TEntity>($"{servicesAccess.url}/{layerId}", servicesAccess.token)
+                    .Execute(request);
 
             if (response.features == null) return featureList;
 
@@ -106,12 +113,13 @@ namespace EsriRestLibrary.Core.Helpers
             return featureList;
         }
 
-        public virtual IEnumerable<Feature<TEntity, TGeometry>> GetList(ServicesAccess servicesAccess, int layerId, string criteria, SpatialReference spatialReference)
+        public virtual IEnumerable<Feature<TEntity, TGeometry>> GetList(ServicesAccess servicesAccess, int layerId,
+            string criteria, SpatialReference spatialReference)
         {
             var featureList = new List<Feature<TEntity, TGeometry>>();
             var request = new QueryRequest
             {
-                @where = criteria,
+                where = criteria,
                 //resultOffset = 0,
                 //resultRecordCount = pageSize,
                 //orderByFields = orderBy + " " + sortDirection,
@@ -119,7 +127,9 @@ namespace EsriRestLibrary.Core.Helpers
                 inSR = JsonConvert.SerializeObject(spatialReference),
                 outSR = JsonConvert.SerializeObject(spatialReference)
             };
-            var response = new EsriQueryTask<TGeometry, TEntity>($"{servicesAccess.url}/{layerId}", servicesAccess.token).Execute(request);
+            var response =
+                new EsriQueryTask<TGeometry, TEntity>($"{servicesAccess.url}/{layerId}", servicesAccess.token)
+                    .Execute(request);
             if (response.features == null) return featureList;
 
             foreach (var feature in response.features)

@@ -1,5 +1,4 @@
-﻿using EsriRestLibrary.Core.Helpers;
-using EsriRestLibrary.Core.Interfaces;
+﻿using EsriRestLibrary.Core.Interfaces;
 using EsriRestLibrary.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 

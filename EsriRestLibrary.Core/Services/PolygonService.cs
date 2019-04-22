@@ -7,6 +7,5 @@ namespace EsriRestLibrary.Core.Services
     public class PolygonService<TEntity> : EsriGeoRepository<TEntity, EsriPolygon>, IPolygonService<TEntity>
         where TEntity : class, new()
     {
-      
     }
 }
