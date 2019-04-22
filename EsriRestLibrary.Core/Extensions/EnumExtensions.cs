@@ -1,6 +1,6 @@
 ﻿namespace EsriRestLibrary.Core.Extensions
 {
-    public static class EnumExtensions
+    public static class Extensions
     {
         public static string ReplaceCoordinateForCommaToDot(this string coordinateWithComma)
         {
